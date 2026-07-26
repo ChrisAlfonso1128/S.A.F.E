@@ -1,4 +1,4 @@
-# Archive & Cleanup Engine
+# Archive & Cleanup Engine - Christopher Alfonso
 
 ## Overview
 Develop the module responsible for safely archiving and removing files.
