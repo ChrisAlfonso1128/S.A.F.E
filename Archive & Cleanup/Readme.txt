@@ -14,3 +14,8 @@ Develop the module responsible for safely archiving and removing files.
 - Archive manager
 - Delete/restore functions
 - ZIP archive creation
+
+# Call Code
+- to call my code use
+  archive.archive_files(files_to_archive)
+  cleanup.move_to_trash(files_to_delete)
