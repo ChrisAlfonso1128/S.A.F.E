@@ -1,4 +1,4 @@
-# Duplicate Detection Engine
+# Duplicate Detection Engine - Nicolas Espinosa
 
 ## Overview
 Develop the module that identifies duplicate files.
