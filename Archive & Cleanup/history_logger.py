@@ -5,11 +5,11 @@ from datetime import datetime
 
 class HistoryLogger:
 
-    def __init__(self):
+    def __init__(self, log_file="SAFE_Data/logs/history.json"):
 
-        self.log_file = Path("logs/history.json")
+        self.log_file = Path(log_file)
 
-        self.log_file.parent.mkdir(exist_ok=True)
+        self.log_file.parent.mkdir(parents=True, exist_ok=True)
 
         if not self.log_file.exists():
 
