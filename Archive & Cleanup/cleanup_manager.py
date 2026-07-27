@@ -4,9 +4,9 @@ import shutil
 
 class CleanupManager:
 
-    def __init__(self):
+    def __init__(self, trash_folder="SAFE_Data/Trash"):
 
-        self.trash_folder = Path("Trash")
+        self.trash_folder = Path(trash_folder)
 
         self.trash_folder.mkdir(
             parents=True,
