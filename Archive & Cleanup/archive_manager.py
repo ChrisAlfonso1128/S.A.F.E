@@ -8,7 +8,7 @@ class ArchiveManager:
     Handles archiving files into timestamped ZIP archives.
     """
 
-    def __init__(self, archive_folder="Archive"):
+    def __init__(self, archive_folder="SAFE_Data/Archive"):
 
         self.archive_folder = Path(archive_folder)
 
