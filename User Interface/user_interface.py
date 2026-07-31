@@ -3,6 +3,8 @@ from pathlib import Path
 from archive_manager import ArchiveManager
 from cleanup_manager import CleanupManager
 from history_logger import HistoryLogger
+from file_scanner import scan_directory
+from Duplicate_Detection import getHashOfDirectoryFiles
 
 
 class UserInterface:
@@ -37,6 +39,12 @@ class UserInterface:
                 self.show_history()
 
             elif choice == "4":
+                self.handle_scan()
+
+            elif choice == "5":
+                self.handle_duplicates()
+
+            elif choice == "6":
                 print("\nExiting S.A.F.E. Goodbye!")
                 break
 
@@ -49,7 +57,9 @@ class UserInterface:
         print("1. Archive files")
         print("2. Move files to Trash")
         print("3. View history")
-        print("4. Exit")
+        print("4. Scan a folder")
+        print("5. Find duplicate files")
+        print("6. Exit")
 
     def handle_archive(self):
 
@@ -81,6 +91,72 @@ class UserInterface:
             for entry in failed:
                 print(f"  {entry['file']} — {entry['error']}")
 
+    def handle_scan(self):
+
+        folder = self.prompt_for_folder()
+
+        if not folder:
+            return
+
+        files = scan_directory(folder)
+
+        if not files:
+            print("\nNo files found.")
+            return
+
+        print(f"\nScanned {len(files)} file(s).\n")
+
+        for file_info in files:
+            print(f"  Name:          {file_info['name']}")
+            print(f"  Path:          {file_info['path']}")
+            print(f"  Size:          {file_info['size']} bytes")
+            print(f"  Last Modified: {file_info['last_modified']}")
+            print(f"  Last Accessed: {file_info['last_accessed']}")
+            print()
+
+    def handle_duplicates(self):
+
+        folder = self.prompt_for_folder()
+
+        if not folder:
+            return
+
+        hash_data = getHashOfDirectoryFiles(folder)
+
+        found_duplicates = False
+
+        for file_hash, file_list in hash_data.items():
+
+            if len(file_list) > 1:
+
+                found_duplicates = True
+
+                print("\nDUPLICATE FILES DETECTED")
+                print("===========================================")
+                print("\n".join(str(path) for path in file_list))
+
+        if not found_duplicates:
+            print(f"\nNo duplicate files found in: {folder}")
+
+    def prompt_for_folder(self):
+        """
+        Prompts for a folder path and confirms it exists.
+        Returns the path as a string, or None if cancelled/invalid.
+        """
+
+        folder_input = input(
+            "\nEnter a folder path (or press Enter to cancel): "
+        ).strip()
+
+        if not folder_input:
+            return None
+
+        if not Path(folder_input).is_dir():
+            print("That folder doesn't exist.")
+            return None
+
+        return folder_input
+
     def show_history(self):
 
         import json
@@ -107,18 +183,12 @@ class UserInterface:
         pick which ones to act on. Returns a list of file paths.
         """
 
-        folder_input = input(
-            "\nEnter a folder path (or press Enter to cancel): "
-        ).strip()
+        folder_input = self.prompt_for_folder()
 
         if not folder_input:
             return []
 
         folder = Path(folder_input)
-
-        if not folder.is_dir():
-            print("That folder doesn't exist.")
-            return []
 
         files = [f for f in folder.iterdir() if f.is_file()]
 
